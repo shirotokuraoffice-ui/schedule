@@ -42,6 +42,8 @@
     }
   </style>
   <script>
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbyEObZSCGlWnOucv3oLh-S3VLJGmSm2-GwyG0yys6fquGIMYP_brkMapSYg-CuY_-v8wA/exec";
+
     function adjustStandaloneLayout() {
       const wrap = document.getElementById('appWrap');
       if (!wrap) return;
@@ -55,10 +57,7 @@
       const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
 
       if (isStandalone) {
-        // 上部のぼかしエリアを完全に避けるよう余白を拡大
         wrap.style.paddingTop = Math.max(safeTop + 25, 84) + 'px';
-
-        // iOSの全画面モードで下部に余白が空く現象を解消し、画面の一番下まで広げる
         const isPortrait = window.innerWidth < window.innerHeight;
         const fullHeight = isPortrait ? window.screen.height : window.screen.width;
         document.documentElement.style.height = fullHeight + 'px';
@@ -66,13 +65,18 @@
         wrap.style.height = fullHeight + 'px';
       }
     }
-    window.addEventListener('DOMContentLoaded', adjustStandaloneLayout);
+
+    window.addEventListener('DOMContentLoaded', () => {
+      adjustStandaloneLayout();
+      // 起動するたびに最新バージョンを読み込む（キャッシュ防止）
+      document.getElementById('gasFrame').src = GAS_URL + "?t=" + Date.now();
+    });
     window.addEventListener('resize', adjustStandaloneLayout);
   </script>
 </head>
 <body>
   <div id="appWrap">
-    <iframe src="https://script.google.com/macros/s/AKfycbyEObZSCGlWnOucv3oLh-S3VLJGmSm2-GwyG0yys6fquGIMYP_brkMapSYg-CuY_-v8wA/exec" allow="clipboard-read; clipboard-write"></iframe>
+    <iframe id="gasFrame" allow="clipboard-read; clipboard-write"></iframe>
   </div>
 </body>
 </html>
