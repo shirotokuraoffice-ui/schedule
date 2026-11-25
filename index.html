@@ -7,18 +7,50 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="SHIROTOKURA">
-  <!-- ↓ここでCanvaで作った icon.png を読み込んでいます -->
-  <link rel="apple-touch-icon" href="icon.png">
-  <link rel="icon" type="image/png" href="icon.png">
+  <!-- アップロードしたロゴ画像（icon.png）をアイコンに設定 -->
+  <link rel="apple-touch-icon" href="icon.png?v=2">
+  <link rel="icon" type="image/png" href="icon.png?v=2">
   <style>
+    * { box-sizing: border-box; }
     html, body {
-      margin: 0; padding: 0; width: 100%; height: 100%;
-      background-color: #071526; overflow: hidden;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #071526;
+      overflow: hidden;
+    }
+    /* 時計・5G・バッテリーと上部のぼかしエリアを確実に避ける設定 */
+    body {
+      padding-top: env(safe-area-inset-top, 0px);
+    }
+    @media all and (display-mode: standalone) {
+      body {
+        padding-top: max(calc(env(safe-area-inset-top, 59px) + 10px), 68px);
+      }
     }
     iframe {
-      width: 100%; height: 100%; border: none; display: block;
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
     }
   </style>
+  <script>
+    function applySafeTop() {
+      const probe = document.createElement('div');
+      probe.style.paddingTop = 'env(safe-area-inset-top, 0px)';
+      document.body.appendChild(probe);
+      const safeTop = parseInt(window.getComputedStyle(probe).paddingTop, 10) || 0;
+      document.body.removeChild(probe);
+
+      if (window.navigator.standalone || safeTop > 20) {
+        document.body.style.paddingTop = Math.max(safeTop + 10, 68) + 'px';
+      }
+    }
+    window.addEventListener('DOMContentLoaded', applySafeTop);
+    window.addEventListener('resize', applySafeTop);
+  </script>
 </head>
 <body>
   <iframe src="https://script.google.com/macros/s/AKfycbyEObZSCGlWnOucv3oLh-S3VLJGmSm2-GwyG0yys6fquGIMYP_brkMapSYg-CuY_-v8wA/exec" allow="clipboard-read; clipboard-write"></iframe>
